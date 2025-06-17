@@ -1,8 +1,7 @@
-
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Globe, Info, X } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Globe, Info, X, RotateCcw } from 'lucide-react';
+import { Card, CardContent } from '@/components/ui/card';
 
 interface Planet {
   name: string;
@@ -21,6 +20,7 @@ interface Planet {
 
 const SolarSystem = () => {
   const [selectedPlanet, setSelectedPlanet] = useState<Planet | null>(null);
+  const [is3DView, setIs3DView] = useState(false);
 
   const planets: Planet[] = [
     {
@@ -138,73 +138,117 @@ const SolarSystem = () => {
   ];
 
   return (
-    <div className="container mx-auto px-6 relative z-10">
+    <div className="container mx-auto px-4 py-8 relative z-10">
       <motion.div
-        initial={{ y: 50, opacity: 0 }}
-        whileInView={{ y: 0, opacity: 1 }}
+        initial={{ y: 40, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.8 }}
-        viewport={{ once: true }}
       >
-        <div className="text-center mb-12">
-          <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent">
+        <div className="text-center mb-8">
+          <h2 className="text-4xl font-bold mb-2 bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent">
             Solar System Explorer
           </h2>
-          <p className="text-xl text-gray-300">
-            Interactive journey through our cosmic neighborhood
-          </p>
+          <p className="text-lg text-gray-300">Explore our cosmic neighborhood in 2D & 3D</p>
         </div>
 
-        <div className="relative bg-black/30 backdrop-blur-sm rounded-3xl p-8 border border-white/20 overflow-x-auto">
-          <div className="relative min-w-[600px] h-[400px] flex items-center justify-center">
-            {/* Sun */}
-            <div className="absolute left-8 top-1/2 transform -translate-y-1/2">
-              <motion.div
-                animate={{ rotate: 360 }}
-                transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-                className="w-16 h-16 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full shadow-lg relative"
+        <div className="flex justify-center mb-6">
+          <button
+            onClick={() => setIs3DView(false)}
+            className={`px-4 py-2 border rounded-l-lg ${
+              !is3DView ? 'bg-yellow-400 text-black' : 'bg-gray-700 text-white'
+            }`}
+          >
+            2D View
+          </button>
+          <button
+            onClick={() => setIs3DView(true)}
+            className={`px-4 py-2 border rounded-r-lg ${
+              is3DView ? 'bg-yellow-400 text-black' : 'bg-gray-700 text-white'
+            }`}
+          >
+            3D View
+          </button>
+        </div>
+
+        <AnimatePresence mode="wait">
+          {!is3DView ? (
+            <motion.div
+              key="2d"
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -30 }}
+              transition={{ duration: 0.5 }}
+              className="relative bg-black/30 backdrop-blur-md border border-white/20 rounded-3xl p-8 overflow-x-auto max-w-6xl mx-auto"
+            >
+              <div className="relative min-w-[1000px] h-[400px] flex items-center justify-center">
+                {/* Sun */}
+                <div className="absolute left-8 top-1/2 transform -translate-y-1/2">
+                  <motion.div
+                    animate={{ rotate: 360 }}
+                    transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
+                    className="w-16 h-16 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full shadow-lg relative"
+                  >
+                    <div className="absolute inset-0 bg-yellow-300 rounded-full animate-pulse opacity-50"></div>
+                  </motion.div>
+                  <p className="text-center text-yellow-400 text-sm mt-2 font-semibold">Sun</p>
+                </div>
+
+                {/* Planets */}
+                {planets.map((planet, index) => (
+                  <motion.div
+                    key={planet.name}
+                    className="absolute"
+                    style={{
+                      left: `${planet.distance}px`,
+                      top: '50%',
+                      transform: 'translateY(-50%)',
+                    }}
+                    initial={{ scale: 0, opacity: 0 }}
+                    whileInView={{ scale: 1, opacity: 1 }}
+                    transition={{ duration: 0.5, delay: index * 0.1 }}
+                    viewport={{ once: true }}
+                  >
+                    <motion.button
+                      onClick={() => setSelectedPlanet(planet)}
+                      className={`w-${planet.size} h-${planet.size} ${planet.color} rounded-full shadow-lg hover:scale-110 transition-transform duration-300 relative group`}
+                      style={{
+                        width: `${planet.size * 4}px`,
+                        height: `${planet.size * 4}px`,
+                      }}
+                      whileHover={{ scale: 1.2 }}
+                      whileTap={{ scale: 0.9 }}
+                    >
+                      <div className="absolute inset-0 rounded-full bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                      <Info className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-4 h-4 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    </motion.button>
+                    <p className="text-center text-white text-xs mt-2 font-medium">{planet.name}</p>
+                  </motion.div>
+                ))}
+              </div>
+              <p className="text-gray-400 text-sm text-center mt-4">Click a planet to learn more</p>
+            </motion.div>
+          ) : (
+            <motion.div
+              key="3d"
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -30 }}
+              transition={{ duration: 0.5 }}
+              className="flex justify-center mt-4"
+            >
+              <video
+                autoPlay
+                muted
+                loop
+                playsInline
+                className="rounded-xl shadow-lg border border-white/20 max-w-6xl w-full"
               >
-                <div className="absolute inset-0 bg-yellow-300 rounded-full animate-pulse opacity-50"></div>
-              </motion.div>
-              <p className="text-center text-yellow-400 text-sm mt-2 font-semibold">Sun</p>
-            </div>
-
-            {/* Planets */}
-            {planets.map((planet, index) => (
-              <motion.div
-                key={planet.name}
-                className="absolute"
-                style={{
-                  left: `${planet.distance}px`,
-                  top: '50%',
-                  transform: 'translateY(-50%)',
-                }}
-                initial={{ scale: 0, opacity: 0 }}
-                whileInView={{ scale: 1, opacity: 1 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                viewport={{ once: true }}
-              >
-                <motion.button
-                  onClick={() => setSelectedPlanet(planet)}
-                  className={`w-${planet.size} h-${planet.size} ${planet.color} rounded-full shadow-lg hover:scale-110 transition-transform duration-300 relative group`}
-                  style={{
-                    width: `${planet.size * 4}px`,
-                    height: `${planet.size * 4}px`,
-                  }}
-                  whileHover={{ scale: 1.2 }}
-                  whileTap={{ scale: 0.9 }}
-                >
-                  <div className="absolute inset-0 rounded-full bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                  <Info className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-4 h-4 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                </motion.button>
-                <p className="text-center text-white text-xs mt-2 font-medium">{planet.name}</p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-
-        <div className="mt-8 text-center">
-          <p className="text-gray-400 text-sm">Click on any planet to learn more about it</p>
-        </div>
+                <source src="/solarsystem.mp4" type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </motion.div>
 
       {/* Planet Details Modal */}
@@ -226,9 +270,7 @@ const SolarSystem = () => {
             >
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center space-x-3">
-                  <div
-                    className={`w-8 h-8 ${selectedPlanet.color} rounded-full`}
-                  ></div>
+                  <div className={`w-8 h-8 ${selectedPlanet.color} rounded-full`}></div>
                   <h3 className="text-2xl font-bold text-white">{selectedPlanet.name}</h3>
                 </div>
                 <button
@@ -238,12 +280,8 @@ const SolarSystem = () => {
                   <X className="w-6 h-6" />
                 </button>
               </div>
-
               <div className="space-y-4">
-                <p className="text-gray-300 text-sm leading-relaxed">
-                  {selectedPlanet.facts.description}
-                </p>
-
+                <p className="text-gray-300 text-sm leading-relaxed">{selectedPlanet.facts.description}</p>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <p className="text-gray-400 text-xs">Diameter</p>

@@ -1,11 +1,10 @@
-
-import { useState } from 'react';
-import { motion } from 'framer-motion';
-import { MessageCircle, Send, Bot, User, Sparkles } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
+import { useState } from "react";
+import { motion } from "framer-motion";
+import { MessageCircle, Send, Bot, User, Sparkles } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
 
 interface Message {
   id: string;
@@ -17,15 +16,15 @@ interface Message {
 const AITutor = () => {
   const [messages, setMessages] = useState<Message[]>([
     {
-      id: '1',
+      id: "1",
       text: "Hello! I'm your AI Astronomy Tutor. I can help you learn about space, explain celestial phenomena, and answer any questions about the universe. What would you like to explore today?",
       isUser: false,
       timestamp: new Date(),
-    }
+    },
   ]);
-  const [inputText, setInputText] = useState('');
+  const [inputText, setInputText] = useState("");
   const [isTyping, setIsTyping] = useState(false);
-  const [mode, setMode] = useState<'simple' | 'detailed'>('simple');
+  const [mode, setMode] = useState<"simple" | "detailed">("simple");
 
   const quickQuestions = [
     "What causes meteor showers?",
@@ -35,6 +34,35 @@ const AITutor = () => {
     "What are the phases of the moon?",
     "How are stars born?",
   ];
+
+  const responses = {
+    simple: {
+      meteor:
+        "Meteor showers happen when Earth passes through debris left by comets! These tiny pieces burn up in our atmosphere, creating beautiful streaks of light. It's like cosmic fireworks! 🌟",
+      iss: "The International Space Station orbits about 408 kilometers (254 miles) above Earth. That's roughly the distance from New York to Boston, but straight up! 🚀",
+      "black hole":
+        "A black hole is like a cosmic vacuum cleaner so powerful that nothing can escape it - not even light! They form when massive stars collapse. Think of it as a point where gravity becomes super strong! 🕳️",
+      orbit:
+        "Planets orbit the sun because of gravity! The sun's massive size creates a gravitational pull that keeps planets moving in curved paths around it, like a ball on a string being swung in circles! 🌍",
+      "moon phases":
+        "Moon phases happen because we see different amounts of the moon lit up by the sun as it orbits Earth. It's like watching a ball with a flashlight - sometimes we see the whole lit side, sometimes just a sliver! 🌙",
+      stars:
+        "Stars are born in giant clouds of gas and dust called nebulae. When these clouds get squeezed together by gravity, they heat up and start nuclear fusion - that's when a star is born and begins to shine! ⭐",
+    },
+    detailed: {
+      meteor:
+        "Meteor showers occur when Earth's orbital path intersects with the debris trail of a comet. As comets approach the Sun, solar radiation causes volatile materials to sublimate, creating a trail of particles...",
+      iss: "The International Space Station maintains an orbital altitude of approximately 408 kilometers (254 miles) above Earth's surface...",
+      "black hole":
+        "Black holes are regions of spacetime where gravitational effects become so strong that nothing—not even electromagnetic radiation such as light—can escape...",
+      orbit:
+        "Planetary orbits result from the balance between gravitational attraction and inertial motion. According to Newton's laws...",
+      "moon phases":
+        "Lunar phases result from the changing angular relationship between Earth, Moon, and Sun as the Moon orbits Earth with a period of approximately 29.5 days...",
+      stars:
+        "Stellar formation occurs within molecular clouds when gravitational instabilities cause regions of higher density to collapse...",
+    },
+  };
 
   const sendMessage = async () => {
     if (!inputText.trim()) return;
@@ -46,44 +74,64 @@ const AITutor = () => {
       timestamp: new Date(),
     };
 
-    setMessages(prev => [...prev, userMessage]);
-    setInputText('');
+    setMessages((prev) => [...prev, userMessage]);
+    setInputText("");
     setIsTyping(true);
 
-    // Simulate AI response (in real app, this would call OpenAI API)
-    setTimeout(() => {
-      const responses = {
-        simple: {
-          "meteor": "Meteor showers happen when Earth passes through debris left by comets! These tiny pieces burn up in our atmosphere, creating beautiful streaks of light. It's like cosmic fireworks! 🌟",
-          "iss": "The International Space Station orbits about 408 kilometers (254 miles) above Earth. That's roughly the distance from New York to Boston, but straight up! 🚀",
-          "black hole": "A black hole is like a cosmic vacuum cleaner so powerful that nothing can escape it - not even light! They form when massive stars collapse. Think of it as a point where gravity becomes super strong! 🕳️",
-          "orbit": "Planets orbit the sun because of gravity! The sun's massive size creates a gravitational pull that keeps planets moving in curved paths around it, like a ball on a string being swung in circles! 🌍",
-          "moon phases": "Moon phases happen because we see different amounts of the moon lit up by the sun as it orbits Earth. It's like watching a ball with a flashlight - sometimes we see the whole lit side, sometimes just a sliver! 🌙",
-          "stars": "Stars are born in giant clouds of gas and dust called nebulae. When these clouds get squeezed together by gravity, they heat up and start nuclear fusion - that's when a star is born and begins to shine! ⭐",
-        },
-        detailed: {
-          "meteor": "Meteor showers occur when Earth's orbital path intersects with the debris trail of a comet. As comets approach the Sun, solar radiation causes volatile materials to sublimate, creating a trail of particles. When Earth encounters this debris field, the particles enter our atmosphere at high velocities (typically 11-72 km/s), where friction with atmospheric molecules causes them to heat up and ionize, creating the luminous phenomena we observe as meteors.",
-          "iss": "The International Space Station maintains an orbital altitude of approximately 408 kilometers (254 miles) above Earth's surface. This places it within the thermosphere, where it experiences minimal atmospheric drag while remaining accessible for crew rotations and supply missions. The station completes one orbit approximately every 90 minutes, traveling at a velocity of about 7.66 km/s.",
-          "black hole": "Black holes are regions of spacetime where gravitational effects become so strong that nothing—not even electromagnetic radiation such as light—can escape. They form when massive stars (typically >25 solar masses) undergo gravitational collapse at the end of their stellar evolution. The resulting singularity creates a gravitational field so intense that it warps spacetime according to Einstein's General Theory of Relativity.",
-          "orbit": "Planetary orbits result from the balance between gravitational attraction and inertial motion. According to Newton's laws, objects in motion tend to stay in motion unless acted upon by a force. The Sun's gravitational field provides the centripetal force necessary to maintain elliptical orbital paths, as described by Kepler's laws of planetary motion.",
-          "moon phases": "Lunar phases result from the changing angular relationship between Earth, Moon, and Sun as the Moon orbits Earth with a period of approximately 29.5 days. The illuminated portion visible from Earth depends on the Moon's position relative to the Sun, creating the cycle from new moon through waxing crescent, first quarter, waxing gibbous, full moon, waning gibbous, third quarter, and waning crescent.",
-          "stars": "Stellar formation occurs within molecular clouds when gravitational instabilities cause regions of higher density to collapse. As the protostar contracts, gravitational potential energy converts to thermal energy, raising core temperatures to approximately 10^7 K, where hydrogen fusion begins via the proton-proton chain reaction, marking the transition to the main sequence phase of stellar evolution.",
+    const lowerText = inputText.toLowerCase();
+    const topicKey = Object.keys(responses[mode]).find((key) =>
+      lowerText.includes(key)
+    );
+    let replyText = "";
+
+    if (topicKey) {
+      replyText = responses[mode][topicKey as keyof typeof responses.simple];
+    } else {
+      try {
+        // GPT-Neo fallback
+        const initRes = await fetch(
+          "https://anjel01-simple-chatbot.hf.space/call/predict",
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ data: [inputText] }),
+          }
+        );
+        const { event_id } = await initRes.json();
+
+        let fullResponse = "";
+        for (let i = 0; i < 10; i++) {
+          const checkRes = await fetch(
+            `https://anjel01-simple-chatbot.hf.space/call/predict/${event_id}`
+          );
+          const text = await checkRes.text();
+          if (text.includes("event: complete")) {
+            const match = text.match(/data:\s*\["(.+?)"\]/);
+            fullResponse = match
+              ? match[1]
+              : "I'm not sure how to respond to that, but it's a great question!";
+            break;
+          }
+          await new Promise((res) => setTimeout(res, 500));
         }
-      };
+        replyText =
+          fullResponse ||
+          "I'm still thinking about that one! Try asking it differently.";
+      } catch (error) {
+        replyText =
+          "Sorry, I had trouble connecting to my knowledge base. Try again in a moment!";
+      }
+    }
 
-      const botResponse: Message = {
-        id: (Date.now() + 1).toString(),
-        text: responses[mode][Object.keys(responses[mode]).find(key => userMessage.text.toLowerCase().includes(key)) || 'default'] || 
-              (mode === 'simple' ? 
-                "That's a fascinating question! Space is full of amazing phenomena. Could you be more specific about what you'd like to know? I'm here to help explain the wonders of the universe! 🌌" :
-                "I'd be happy to provide a detailed explanation of that astronomical concept. Could you please clarify your question so I can give you the most accurate and comprehensive information possible?"),
-        isUser: false,
-        timestamp: new Date(),
-      };
+    const botResponse: Message = {
+      id: (Date.now() + 1).toString(),
+      text: replyText,
+      isUser: false,
+      timestamp: new Date(),
+    };
 
-      setMessages(prev => [...prev, botResponse]);
-      setIsTyping(false);
-    }, 1500);
+    setMessages((prev) => [...prev, botResponse]);
+    setIsTyping(false);
   };
 
   const handleQuickQuestion = (question: string) => {
@@ -108,21 +156,24 @@ const AITutor = () => {
         </div>
 
         <div className="max-w-4xl mx-auto">
-          {/* Mode Toggle */}
           <div className="flex justify-center mb-6">
             <div className="flex space-x-4">
               <Button
-                variant={mode === 'simple' ? 'default' : 'outline'}
-                onClick={() => setMode('simple')}
-                className={mode === 'simple' ? 'bg-cyan-500 hover:bg-cyan-600' : ''}
+                variant={mode === "simple" ? "default" : "outline"}
+                onClick={() => setMode("simple")}
+                className={
+                  mode === "simple" ? "bg-cyan-500 hover:bg-cyan-600" : ""
+                }
               >
                 <Sparkles className="w-4 h-4 mr-2" />
                 Simple Mode
               </Button>
               <Button
-                variant={mode === 'detailed' ? 'default' : 'outline'}
-                onClick={() => setMode('detailed')}
-                className={mode === 'detailed' ? 'bg-blue-500 hover:bg-blue-600' : ''}
+                variant={mode === "detailed" ? "default" : "outline"}
+                onClick={() => setMode("detailed")}
+                className={
+                  mode === "detailed" ? "bg-blue-500 hover:bg-blue-600" : ""
+                }
               >
                 <Bot className="w-4 h-4 mr-2" />
                 Detailed Mode
@@ -130,36 +181,41 @@ const AITutor = () => {
             </div>
           </div>
 
-          {/* Chat Interface */}
           <Card className="mb-6 bg-black/30 border-cyan-400/30 backdrop-blur-sm">
             <CardHeader>
               <CardTitle className="flex items-center space-x-2 text-cyan-400">
                 <MessageCircle className="w-6 h-6" />
                 <span>Chat with AI Tutor</span>
-                <Badge variant="outline" className="border-cyan-400 text-cyan-400 ml-auto">
-                  {mode === 'simple' ? 'ELI5 Mode' : 'Deep Dive Mode'}
+                <Badge
+                  variant="outline"
+                  className="border-cyan-400 text-cyan-400 ml-auto"
+                >
+                  {mode === "simple" ? "ELI5 Mode" : "Deep Dive Mode"}
                 </Badge>
               </CardTitle>
             </CardHeader>
             <CardContent>
-              {/* Messages */}
               <div className="h-96 overflow-y-auto mb-4 space-y-4 p-4 bg-black/20 rounded-lg">
                 {messages.map((message) => (
                   <motion.div
                     key={message.id}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className={`flex ${message.isUser ? 'justify-end' : 'justify-start'}`}
+                    className={`flex ${
+                      message.isUser ? "justify-end" : "justify-start"
+                    }`}
                   >
                     <div
                       className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
                         message.isUser
-                          ? 'bg-cyan-500 text-white'
-                          : 'bg-white/10 text-gray-100 border border-white/20'
+                          ? "bg-cyan-500 text-white"
+                          : "bg-white/10 text-gray-100 border border-white/20"
                       }`}
                     >
                       <div className="flex items-start space-x-2">
-                        {!message.isUser && <Bot className="w-4 h-4 mt-1 text-cyan-400" />}
+                        {!message.isUser && (
+                          <Bot className="w-4 h-4 mt-1 text-cyan-400" />
+                        )}
                         {message.isUser && <User className="w-4 h-4 mt-1" />}
                         <div>
                           <p className="text-sm">{message.text}</p>
@@ -171,7 +227,7 @@ const AITutor = () => {
                     </div>
                   </motion.div>
                 ))}
-                
+
                 {isTyping && (
                   <motion.div
                     initial={{ opacity: 0 }}
@@ -183,8 +239,14 @@ const AITutor = () => {
                         <Bot className="w-4 h-4 text-cyan-400" />
                         <div className="flex space-x-1">
                           <div className="w-2 h-2 bg-cyan-400 rounded-full animate-bounce"></div>
-                          <div className="w-2 h-2 bg-cyan-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                          <div className="w-2 h-2 bg-cyan-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                          <div
+                            className="w-2 h-2 bg-cyan-400 rounded-full animate-bounce"
+                            style={{ animationDelay: "0.1s" }}
+                          ></div>
+                          <div
+                            className="w-2 h-2 bg-cyan-400 rounded-full animate-bounce"
+                            style={{ animationDelay: "0.2s" }}
+                          ></div>
                         </div>
                       </div>
                     </div>
@@ -192,23 +254,24 @@ const AITutor = () => {
                 )}
               </div>
 
-              {/* Input */}
               <div className="flex space-x-2">
                 <Input
                   value={inputText}
                   onChange={(e) => setInputText(e.target.value)}
                   placeholder="Ask me anything about space and astronomy..."
                   className="flex-1 bg-white/10 border-white/20 text-white placeholder-gray-400"
-                  onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
+                  onKeyPress={(e) => e.key === "Enter" && sendMessage()}
                 />
-                <Button onClick={sendMessage} className="bg-cyan-500 hover:bg-cyan-600">
+                <Button
+                  onClick={sendMessage}
+                  className="bg-cyan-500 hover:bg-cyan-600"
+                >
                   <Send className="w-4 h-4" />
                 </Button>
               </div>
             </CardContent>
           </Card>
 
-          {/* Quick Questions */}
           <Card className="bg-black/30 border-white/20 backdrop-blur-sm">
             <CardHeader>
               <CardTitle className="text-white">Quick Questions</CardTitle>
