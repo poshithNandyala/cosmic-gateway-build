@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { ThemeProvider } from '@/contexts/ThemeContext';
@@ -12,9 +11,11 @@ import SpaceXTracker from '@/components/SpaceXTracker';
 import StargazingGuide from '@/components/StargazingGuide';
 import AITutor from '@/components/AITutor';
 import StarField from '@/components/StarField';
+import { useAuth } from '@/contexts/AuthContext';
 
 const Index = () => {
   const [currentSection, setCurrentSection] = useState('hero');
+  const { user } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
