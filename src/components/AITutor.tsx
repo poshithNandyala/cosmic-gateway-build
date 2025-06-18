@@ -5,6 +5,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { GoogleGenAI } from "@google/genai";
+
 
 interface Message {
   id: string;
@@ -64,6 +66,7 @@ const AITutor = () => {
     },
   };
 
+  
   const sendMessage = async () => {
     if (!inputText.trim()) return;
 
@@ -88,35 +91,16 @@ const AITutor = () => {
       replyText = responses[mode][topicKey as keyof typeof responses.simple];
     } else {
       try {
-        // GPT-Neo fallback
-        const initRes = await fetch(
-          "https://anjel01-simple-chatbot.hf.space/call/predict",
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ data: [inputText] }),
-          }
-        );
-        const { event_id } = await initRes.json();
-
-        let fullResponse = "";
-        for (let i = 0; i < 10; i++) {
-          const checkRes = await fetch(
-            `https://anjel01-simple-chatbot.hf.space/call/predict/${event_id}`
-          );
-          const text = await checkRes.text();
-          if (text.includes("event: complete")) {
-            const match = text.match(/data:\s*\["(.+?)"\]/);
-            fullResponse = match
-              ? match[1]
-              : "I'm not sure how to respond to that, but it's a great question!";
-            break;
-          }
-          await new Promise((res) => setTimeout(res, 500));
-        }
-        replyText =
-          fullResponse ||
-          "I'm still thinking about that one! Try asking it differently.";
+        const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_GOOGLE_AI_API_KEY });
+        const prompt = mode === "simple" 
+          ? `Explain in one simple line about astronomy topic: ${inputText}`
+          : `Provide a detailed scientific explanation about the astronomy topic: ${inputText}. Focus on technical details and scientific concepts.`;
+        
+        const response = await ai.models.generateContent({
+          model: "gemini-2.5-flash",
+          contents: prompt,
+        });
+        replyText = response.text || "I'm still thinking about that one! Try asking it differently.";
       } catch (error) {
         replyText =
           "Sorry, I had trouble connecting to my knowledge base. Try again in a moment!";
@@ -137,7 +121,6 @@ const AITutor = () => {
   const handleQuickQuestion = (question: string) => {
     setInputText(question);
   };
-
   return (
     <div className="container mx-auto px-6 relative z-10">
       <motion.div
