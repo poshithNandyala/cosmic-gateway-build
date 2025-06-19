@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { MapPin, Calendar, Users, Telescope, Cloud, Sun, Moon, Star } from 'lucide-react';
@@ -245,55 +244,6 @@ const StargazingGuide = () => {
             </div>
           </CardContent>
         </Card>
-
-        {/* Nearby Events */}
-        <div>
-          <h3 className="text-2xl font-bold text-white mb-6 flex items-center space-x-2">
-            <Users className="w-6 h-6" />
-            <span>Nearby Stargazing Events</span>
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {events.map((event, index) => (
-              <motion.div
-                key={event.id}
-                initial={{ y: 50, opacity: 0 }}
-                whileInView={{ y: 0, opacity: 1 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                viewport={{ once: true }}
-              >
-                <Card className="bg-black/30 border-indigo-400/30 backdrop-blur-sm hover:scale-105 transition-transform duration-300">
-                  <CardHeader>
-                    <CardTitle className="text-white">{event.title}</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-3">
-                      <div className="flex items-center space-x-2 text-sm text-gray-400">
-                        <Calendar className="w-4 h-4" />
-                        <span>{new Date(event.date).toLocaleDateString()}</span>
-                      </div>
-                      <div className="flex items-center space-x-2 text-sm text-gray-400">
-                        <MapPin className="w-4 h-4" />
-                        <span>{event.location_name}</span>
-                      </div>
-                      {event.organizer && (
-                        <div className="flex items-center space-x-2 text-sm text-gray-400">
-                          <Users className="w-4 h-4" />
-                          <span>{event.organizer}</span>
-                        </div>
-                      )}
-                      {event.description && (
-                        <p className="text-gray-300 text-sm line-clamp-3">{event.description}</p>
-                      )}
-                      <Badge variant="outline" className="border-indigo-400 text-indigo-400">
-                        {event.event_type || 'Public Event'}
-                      </Badge>
-                    </div>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
-          </div>
-        </div>
       </motion.div>
     </div>
   );

@@ -1,15 +1,12 @@
-
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
-import { MessageCircle, Send, Bot, User, Sparkles, Trash2, History } from "lucide-react";
+import { MessageCircle, Send, Bot, User, Sparkles } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { GoogleGenAI } from "@google/genai";
-import { supabase } from "@/integrations/supabase/client";
-import { useAuth } from "@/contexts/AuthContext";
-import { useToast } from "@/hooks/use-toast";
+
 
 interface Message {
   id: string;
@@ -18,17 +15,7 @@ interface Message {
   timestamp: Date;
 }
 
-interface ChatSession {
-  id: string;
-  session_title: string;
-  messages: Message[];
-  created_at: string;
-  updated_at: string;
-}
-
 const AITutor = () => {
-  const { user } = useAuth();
-  const { toast } = useToast();
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "1",
@@ -40,9 +27,6 @@ const AITutor = () => {
   const [inputText, setInputText] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const [mode, setMode] = useState<"simple" | "detailed">("simple");
-  const [currentSessionId, setCurrentSessionId] = useState<string | null>(null);
-  const [chatSessions, setChatSessions] = useState<ChatSession[]>([]);
-  const [showHistory, setShowHistory] = useState(false);
 
   const quickQuestions = [
     "What causes meteor showers?",
@@ -82,124 +66,7 @@ const AITutor = () => {
     },
   };
 
-  // Load chat history when user is authenticated
-  useEffect(() => {
-    if (user) {
-      loadChatHistory();
-    }
-  }, [user]);
-
-  const loadChatHistory = async () => {
-    if (!user) return;
-
-    try {
-      const { data, error } = await supabase
-        .from('ai_tutor_sessions')
-        .select('*')
-        .order('updated_at', { ascending: false });
-
-      if (error) throw error;
-
-      const sessions = data?.map(session => ({
-        ...session,
-        messages: session.messages || []
-      })) || [];
-
-      setChatSessions(sessions);
-
-      // Load the most recent session if available
-      if (sessions.length > 0) {
-        const latestSession = sessions[0];
-        setCurrentSessionId(latestSession.id);
-        if (latestSession.messages.length > 0) {
-          setMessages(latestSession.messages);
-        }
-      }
-    } catch (error) {
-      console.error('Error loading chat history:', error);
-    }
-  };
-
-  const saveCurrentSession = async () => {
-    if (!user || !currentSessionId) return;
-
-    try {
-      const { error } = await supabase
-        .from('ai_tutor_sessions')
-        .update({
-          messages: messages,
-          session_title: messages.length > 1 ? messages[1].text.substring(0, 50) + '...' : 'New Chat Session'
-        })
-        .eq('id', currentSessionId);
-
-      if (error) throw error;
-    } catch (error) {
-      console.error('Error saving session:', error);
-    }
-  };
-
-  const createNewSession = async () => {
-    if (!user) return;
-
-    try {
-      const { data, error } = await supabase
-        .from('ai_tutor_sessions')
-        .insert({
-          user_id: user.id,
-          session_title: 'New Chat Session',
-          messages: [{
-            id: "1",
-            text: "Hello! I'm your AI Astronomy Tutor. I can help you learn about space, explain celestial phenomena, and answer any questions about the universe. What would you like to explore today?",
-            isUser: false,
-            timestamp: new Date(),
-          }]
-        })
-        .select()
-        .single();
-
-      if (error) throw error;
-
-      setCurrentSessionId(data.id);
-      setMessages([{
-        id: "1",
-        text: "Hello! I'm your AI Astronomy Tutor. I can help you learn about space, explain celestial phenomena, and answer any questions about the universe. What would you like to explore today?",
-        isUser: false,
-        timestamp: new Date(),
-      }]);
-
-      await loadChatHistory();
-    } catch (error) {
-      console.error('Error creating new session:', error);
-    }
-  };
-
-  const loadSession = async (sessionId: string) => {
-    const session = chatSessions.find(s => s.id === sessionId);
-    if (session) {
-      setCurrentSessionId(sessionId);
-      setMessages(session.messages);
-      setShowHistory(false);
-    }
-  };
-
-  const clearChat = async () => {
-    if (user) {
-      await createNewSession();
-    } else {
-      setMessages([{
-        id: "1",
-        text: "Hello! I'm your AI Astronomy Tutor. I can help you learn about space, explain celestial phenomena, and answer any questions about the universe. What would you like to explore today?",
-        isUser: false,
-        timestamp: new Date(),
-      }]);
-    }
-    
-    toast({
-      title: "Chat Cleared",
-      description: "Started a new conversation.",
-    });
-  };
-
+  
   const sendMessage = async () => {
     if (!inputText.trim()) return;
 
@@ -210,15 +77,9 @@ const AITutor = () => {
       timestamp: new Date(),
     };
 
-    const newMessages = [...messages, userMessage];
-    setMessages(newMessages);
+    setMessages((prev) => [...prev, userMessage]);
     setInputText("");
     setIsTyping(true);
-
-    // Create new session if user is logged in and no current session
-    if (user && !currentSessionId) {
-      await createNewSession();
-    }
 
     const lowerText = inputText.toLowerCase();
     const topicKey = Object.keys(responses[mode]).find((key) =>
@@ -253,20 +114,13 @@ const AITutor = () => {
       timestamp: new Date(),
     };
 
-    const finalMessages = [...newMessages, botResponse];
-    setMessages(finalMessages);
+    setMessages((prev) => [...prev, botResponse]);
     setIsTyping(false);
-
-    // Save to Supabase if user is logged in
-    if (user && currentSessionId) {
-      await saveCurrentSession();
-    }
   };
 
   const handleQuickQuestion = (question: string) => {
     setInputText(question);
   };
-
   return (
     <div className="container mx-auto px-6 relative z-10">
       <motion.div
@@ -312,84 +166,18 @@ const AITutor = () => {
 
           <Card className="mb-6 bg-black/30 border-cyan-400/30 backdrop-blur-sm">
             <CardHeader>
-              <CardTitle className="flex items-center justify-between text-cyan-400">
-                <div className="flex items-center space-x-2">
-                  <MessageCircle className="w-6 h-6" />
-                  <span>Chat with AI Tutor</span>
-                  <Badge
-                    variant="outline"
-                    className="border-cyan-400 text-cyan-400"
-                  >
-                    {mode === "simple" ? "ELI5 Mode" : "Deep Dive Mode"}
-                  </Badge>
-                </div>
-                <div className="flex items-center space-x-2">
-                  {user && (
-                    <>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setShowHistory(!showHistory)}
-                        className="border-cyan-400/50 hover:bg-cyan-500/20"
-                      >
-                        <History className="w-4 h-4 mr-2" />
-                        History
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={clearChat}
-                        className="border-red-400/50 hover:bg-red-500/20"
-                      >
-                        <Trash2 className="w-4 h-4 mr-2" />
-                        Clear
-                      </Button>
-                    </>
-                  )}
-                  {!user && (
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={clearChat}
-                      className="border-red-400/50 hover:bg-red-500/20"
-                    >
-                      <Trash2 className="w-4 h-4 mr-2" />
-                      Clear
-                    </Button>
-                  )}
-                </div>
+              <CardTitle className="flex items-center space-x-2 text-cyan-400">
+                <MessageCircle className="w-6 h-6" />
+                <span>Chat with AI Tutor</span>
+                <Badge
+                  variant="outline"
+                  className="border-cyan-400 text-cyan-400 ml-auto"
+                >
+                  {mode === "simple" ? "ELI5 Mode" : "Deep Dive Mode"}
+                </Badge>
               </CardTitle>
             </CardHeader>
             <CardContent>
-              {showHistory && user && (
-                <div className="mb-4 p-4 bg-black/20 rounded-lg border border-white/20">
-                  <h3 className="text-white mb-3 font-semibold">Chat History</h3>
-                  <div className="space-y-2 max-h-32 overflow-y-auto">
-                    {chatSessions.map((session) => (
-                      <button
-                        key={session.id}
-                        onClick={() => loadSession(session.id)}
-                        className={`w-full text-left p-2 rounded border transition-colors ${
-                          currentSessionId === session.id
-                            ? 'border-cyan-400 bg-cyan-500/20'
-                            : 'border-white/20 hover:border-cyan-400/50 hover:bg-white/10'
-                        }`}
-                      >
-                        <div className="text-sm text-white truncate">
-                          {session.session_title}
-                        </div>
-                        <div className="text-xs text-gray-400">
-                          {new Date(session.updated_at).toLocaleDateString()}
-                        </div>
-                      </button>
-                    ))}
-                    {chatSessions.length === 0 && (
-                      <p className="text-gray-400 text-sm">No chat history yet</p>
-                    )}
-                  </div>
-                </div>
-              )}
-
               <div className="h-96 overflow-y-auto mb-4 space-y-4 p-4 bg-black/20 rounded-lg">
                 {messages.map((message) => (
                   <motion.div

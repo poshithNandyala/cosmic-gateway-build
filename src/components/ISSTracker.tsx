@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Satellite, MapPin, Clock, Users } from 'lucide-react';
@@ -90,9 +89,11 @@ const ISSTracker = () => {
         viewport={{ once: true }}
       >
         <div className="text-center mb-12">
-          <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-            ISS Live Tracker
-          </h2>
+          <a href="https://isstracker.pl/en" target="_blank" rel="noopener noreferrer">
+            <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+              ISS Live Tracker
+            </h2>
+          </a>
           <p className="text-xl text-gray-300">
             Follow the International Space Station as it orbits Earth at 27,600 km/h
           </p>
