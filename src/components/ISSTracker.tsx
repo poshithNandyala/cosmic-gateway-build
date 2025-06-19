@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
 import { Satellite, MapPin, Clock, Users } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
@@ -12,25 +11,40 @@ interface ISSData {
   timestamp: number;
 }
 
+interface Astronaut {
+  name: string;
+  craft: string;
+}
+
+const fallbackAstronauts: Astronaut[] = [
+  { name: "Oleg Kononenko", craft: "ISS" },
+  { name: "Tracy C. Dyson", craft: "ISS" },
+  { name: "Jeanette Epps", craft: "ISS" },
+  { name: "Alexander Grebenkin", craft: "ISS" },
+  { name: "Satoshi Furukawa", craft: "ISS" },
+  { name: "Konstantin Borisov", craft: "ISS" },
+  { name: "Andreas Mogensen", craft: "ISS" },
+];
+
 const ISSTracker = () => {
   const [issData, setIssData] = useState<ISSData | null>(null);
+  const [astronauts, setAstronauts] = useState<Astronaut[]>([]);
   const [loading, setLoading] = useState(true);
-  const [astronauts, setAstronauts] = useState<any[]>([]);
 
-  const fetchFromProxy = async (url: string) => {
+  const fetchWithProxy = async (url: string) => {
     const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(
       url
     )}`;
-    const res = await fetch(proxyUrl);
-    if (!res.ok) throw new Error(`Failed to fetch: ${url}`);
-    return await res.json();
+    const response = await fetch(proxyUrl);
+    if (!response.ok) throw new Error("Fetch failed");
+    return response.json();
   };
 
-  const fetchISSData = async () => {
+  const fetchISSInfo = async () => {
     try {
-      const [positionData, peopleData] = await Promise.all([
-        fetchFromProxy("http://api.open-notify.org/iss-now.json"),
-        fetchFromProxy("http://api.open-notify.org/astros.json"),
+      const [positionData, crewData] = await Promise.all([
+        fetchWithProxy("http://api.open-notify.org/iss-now.json"),
+        fetchWithProxy("http://api.open-notify.org/astros.json"),
       ]);
 
       setIssData({
@@ -42,9 +56,11 @@ const ISSTracker = () => {
         timestamp: positionData.timestamp * 1000,
       });
 
-      setAstronauts(peopleData.people.filter((p: any) => p.craft === "ISS"));
-    } catch (error) {
-      console.error("Fetch error:", error);
+      setAstronauts(
+        crewData.people.filter((p: Astronaut) => p.craft === "ISS")
+      );
+    } catch (err) {
+      console.error("Using fallback astronauts due to error:", err);
       setIssData({
         latitude: 0,
         longitude: 0,
@@ -53,30 +69,24 @@ const ISSTracker = () => {
         visibility: "Visible",
         timestamp: Date.now(),
       });
-      setAstronauts([
-        { name: "Demo Astronaut 1", craft: "ISS" },
-        { name: "Demo Astronaut 2", craft: "ISS" },
-      ]);
+      setAstronauts(fallbackAstronauts);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchISSData();
-    const interval = setInterval(fetchISSData, 5000);
+    fetchISSInfo();
+    const interval = setInterval(fetchISSInfo, 10000); // update every 10s
     return () => clearInterval(interval);
   }, []);
 
   if (loading) {
     return (
-      <div className="container mx-auto px-6 text-center">
-        <motion.div
-          animate={{ rotate: 360 }}
-          transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-        >
-          <Satellite className="w-16 h-16 text-blue-400 mx-auto mb-4" />
-        </motion.div>
+      <div className="container mx-auto px-6 text-center py-10">
+        <div className="animate-pulse mb-4">
+          <Satellite className="w-12 h-12 text-blue-400 mx-auto" />
+        </div>
         <p className="text-xl text-gray-300">
           Connecting to the International Space Station...
         </p>
@@ -85,123 +95,101 @@ const ISSTracker = () => {
   }
 
   return (
-    <div className="container mx-auto px-6 relative z-10">
-      <motion.div
-        initial={{ y: 50, opacity: 0 }}
-        whileInView={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.8 }}
-        viewport={{ once: true }}
-      >
-        <div className="text-center mb-12">
-          <a
-            href="https://isstracker.pl/en"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-              ISS Live Tracker
-            </h2>
-          </a>
-          <p className="text-xl text-gray-300">
-            Follow the International Space Station as it orbits Earth at 27,600
-            km/h
-          </p>
-        </div>
+    <div className="container mx-auto px-6 py-10">
+      <div className="text-center mb-10">
+        <a
+          href="https://isstracker.pl/en"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-block"
+        >
+          <h2 className="text-4xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent hover:underline transition-all">
+            ISS Live Tracker
+          </h2>
+        </a>
+        <p className="text-lg text-gray-300 mt-2">
+          Real-time International Space Station info
+        </p>
+      </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <Card className="bg-black/30 border-blue-400/30 backdrop-blur-sm">
-            <CardHeader className="pb-2">
-              <CardTitle className="flex items-center space-x-2 text-blue-400">
-                <MapPin className="w-5 h-5" />
-                <span>Position</span>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-white">
-                <p className="text-sm text-gray-400">Latitude</p>
-                <p className="text-lg font-semibold">
-                  {issData?.latitude.toFixed(4)}°
-                </p>
-                <p className="text-sm text-gray-400 mt-2">Longitude</p>
-                <p className="text-lg font-semibold">
-                  {issData?.longitude.toFixed(4)}°
-                </p>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-black/30 border-purple-400/30 backdrop-blur-sm">
-            <CardHeader className="pb-2">
-              <CardTitle className="flex items-center space-x-2 text-purple-400">
-                <Satellite className="w-5 h-5" />
-                <span>Altitude</span>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-white">
-                <p className="text-3xl font-bold">{issData?.altitude}</p>
-                <p className="text-gray-400">kilometers</p>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-black/30 border-green-400/30 backdrop-blur-sm">
-            <CardHeader className="pb-2">
-              <CardTitle className="flex items-center space-x-2 text-green-400">
-                <Clock className="w-5 h-5" />
-                <span>Velocity</span>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-white">
-                <p className="text-3xl font-bold">
-                  {issData?.velocity.toLocaleString()}
-                </p>
-                <p className="text-gray-400">km/h</p>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-black/30 border-orange-400/30 backdrop-blur-sm">
-            <CardHeader className="pb-2">
-              <CardTitle className="flex items-center space-x-2 text-orange-400">
-                <Users className="w-5 h-5" />
-                <span>Crew</span>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-white">
-                <p className="text-3xl font-bold">{astronauts.length}</p>
-                <p className="text-gray-400">astronauts aboard</p>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        <Card className="bg-black/30 border-white/20 backdrop-blur-sm">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <Card className="bg-black/30 border-blue-400/30 backdrop-blur-sm">
           <CardHeader>
-            <CardTitle className="text-white">Current Crew Members</CardTitle>
+            <CardTitle className="flex items-center gap-2 text-blue-400">
+              <MapPin className="w-5 h-5" /> Position
+            </CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {astronauts.map((astronaut, index) => (
-                <motion.div
-                  key={astronaut.name}
-                  initial={{ x: -50, opacity: 0 }}
-                  whileInView={{ x: 0, opacity: 1 }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
-                  className="bg-white/10 p-4 rounded-lg"
-                >
-                  <p className="text-white font-semibold">{astronaut.name}</p>
-                  <p className="text-gray-400 text-sm">
-                    International Space Station
-                  </p>
-                </motion.div>
-              ))}
-            </div>
+          <CardContent className="text-white">
+            <p className="text-sm text-gray-400">Latitude</p>
+            <p className="text-lg font-semibold">
+              {issData?.latitude.toFixed(4)}°
+            </p>
+            <p className="text-sm text-gray-400 mt-2">Longitude</p>
+            <p className="text-lg font-semibold">
+              {issData?.longitude.toFixed(4)}°
+            </p>
           </CardContent>
         </Card>
-      </motion.div>
+
+        <Card className="bg-black/30 border-purple-400/30 backdrop-blur-sm">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-purple-400">
+              <Satellite className="w-5 h-5" /> Altitude
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="text-white">
+            <p className="text-3xl font-bold">{issData?.altitude}</p>
+            <p className="text-gray-400">km</p>
+          </CardContent>
+        </Card>
+
+        <Card className="bg-black/30 border-green-400/30 backdrop-blur-sm">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-green-400">
+              <Clock className="w-5 h-5" /> Velocity
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="text-white">
+            <p className="text-3xl font-bold">
+              {issData?.velocity.toLocaleString()}
+            </p>
+            <p className="text-gray-400">km/h</p>
+          </CardContent>
+        </Card>
+
+        <Card className="bg-black/30 border-orange-400/30 backdrop-blur-sm">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-orange-400">
+              <Users className="w-5 h-5" /> Crew
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="text-white">
+            <p className="text-3xl font-bold">{astronauts.length}</p>
+            <p className="text-gray-400">astronauts aboard</p>
+          </CardContent>
+        </Card>
+      </div>
+
+      <Card className="bg-black/30 border-white/20 backdrop-blur-sm">
+        <CardHeader>
+          <CardTitle className="text-white">Current Crew Members</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {astronauts.map((astro) => (
+              <div
+                key={astro.name}
+                className="bg-white/10 p-4 rounded-lg transition hover:bg-white/20"
+              >
+                <p className="text-white font-semibold">{astro.name}</p>
+                <p className="text-gray-400 text-sm">
+                  International Space Station
+                </p>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 };
