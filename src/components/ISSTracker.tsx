@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { Satellite, MapPin, Clock, Users } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import { Satellite, MapPin, Clock, Users } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface ISSData {
   latitude: number;
@@ -17,51 +17,52 @@ const ISSTracker = () => {
   const [loading, setLoading] = useState(true);
   const [astronauts, setAstronauts] = useState<any[]>([]);
 
+  const fetchFromProxy = async (url: string) => {
+    const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(
+      url
+    )}`;
+    const res = await fetch(proxyUrl);
+    if (!res.ok) throw new Error(`Failed to fetch: ${url}`);
+    return await res.json();
+  };
+
+  const fetchISSData = async () => {
+    try {
+      const [positionData, peopleData] = await Promise.all([
+        fetchFromProxy("http://api.open-notify.org/iss-now.json"),
+        fetchFromProxy("http://api.open-notify.org/astros.json"),
+      ]);
+
+      setIssData({
+        latitude: parseFloat(positionData.iss_position.latitude),
+        longitude: parseFloat(positionData.iss_position.longitude),
+        altitude: 408,
+        velocity: 27600,
+        visibility: "Visible",
+        timestamp: positionData.timestamp * 1000,
+      });
+
+      setAstronauts(peopleData.people.filter((p: any) => p.craft === "ISS"));
+    } catch (error) {
+      console.error("Fetch error:", error);
+      setIssData({
+        latitude: 0,
+        longitude: 0,
+        altitude: 408,
+        velocity: 27600,
+        visibility: "Visible",
+        timestamp: Date.now(),
+      });
+      setAstronauts([
+        { name: "Demo Astronaut 1", craft: "ISS" },
+        { name: "Demo Astronaut 2", craft: "ISS" },
+      ]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchISSData = async () => {
-      try {
-        const isLocal = window.location.hostname === "localhost";
-        const base = isLocal
-          ? "http://api.open-notify.org"
-          : "https://corsproxy.io/?http://api.open-notify.org";
-
-        const positionRes = await fetch(`${base}/iss-now.json`);
-        const positionData = await positionRes.json();
-
-        const peopleRes = await fetch(`${base}/astros.json`);
-        const peopleData = await peopleRes.json();
-
-        setIssData({
-          latitude: parseFloat(positionData.iss_position.latitude),
-          longitude: parseFloat(positionData.iss_position.longitude),
-          altitude: 408,
-          velocity: 27600,
-          visibility: "Visible",
-          timestamp: positionData.timestamp * 1000,
-        });
-
-        setAstronauts(
-          peopleData.people.filter((person: any) => person.craft === "ISS")
-        );
-        setLoading(false);
-      } catch (error) {
-        console.error("Error fetching ISS data:", error);
-        setIssData({
-          latitude: 25.7617,
-          longitude: -80.1918,
-          altitude: 408,
-          velocity: 27600,
-          visibility: "Visible",
-          timestamp: Date.now(),
-        });
-        setAstronauts([
-          { name: "Demo Astronaut 1", craft: "ISS" },
-          { name: "Demo Astronaut 2", craft: "ISS" },
-        ]);
-        setLoading(false);
-      }
-    };
-
     fetchISSData();
     const interval = setInterval(fetchISSData, 5000);
     return () => clearInterval(interval);
@@ -69,18 +70,16 @@ const ISSTracker = () => {
 
   if (loading) {
     return (
-      <div className="container mx-auto px-6">
-        <div className="text-center">
-          <motion.div
-            animate={{ rotate: 360 }}
-            transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-          >
-            <Satellite className="w-16 h-16 text-blue-400 mx-auto mb-4" />
-          </motion.div>
-          <p className="text-xl text-gray-300">
-            Connecting to the International Space Station...
-          </p>
-        </div>
+      <div className="container mx-auto px-6 text-center">
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+        >
+          <Satellite className="w-16 h-16 text-blue-400 mx-auto mb-4" />
+        </motion.div>
+        <p className="text-xl text-gray-300">
+          Connecting to the International Space Station...
+        </p>
       </div>
     );
   }
