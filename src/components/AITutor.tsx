@@ -122,63 +122,63 @@ const AITutor = () => {
     setInputText(question);
   };
   return (
-    <div className="container mx-auto px-6 relative z-10">
+    <div className="container mx-auto px-8 relative z-10">
       <motion.div
         initial={{ y: 50, opacity: 0 }}
         whileInView={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.8 }}
         viewport={{ once: true }}
       >
-        <div className="text-center mb-12">
-          <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">
+        <div className="text-center mb-14">
+          <h2 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">
             AI Astronomy Tutor
           </h2>
-          <p className="text-xl text-gray-300">
+          <p className="text-2xl text-gray-300">
             Your personal guide to understanding the cosmos
           </p>
         </div>
 
-        <div className="max-w-4xl mx-auto">
-          <div className="flex justify-center mb-6">
-            <div className="flex space-x-4">
+        <div className="max-w-5xl mx-auto">
+          <div className="flex justify-center mb-8">
+            <div className="flex space-x-6">
               <Button
                 variant={mode === "simple" ? "default" : "outline"}
                 onClick={() => setMode("simple")}
-                className={
+                className={`text-lg px-6 py-3 ${
                   mode === "simple" ? "bg-cyan-500 hover:bg-cyan-600" : ""
-                }
+                }`}
               >
-                <Sparkles className="w-4 h-4 mr-2" />
+                <Sparkles className="w-5 h-5 mr-2" />
                 Simple Mode
               </Button>
               <Button
                 variant={mode === "detailed" ? "default" : "outline"}
                 onClick={() => setMode("detailed")}
-                className={
+                className={`text-lg px-6 py-3 ${
                   mode === "detailed" ? "bg-blue-500 hover:bg-blue-600" : ""
-                }
+                }`}
               >
-                <Bot className="w-4 h-4 mr-2" />
+                <Bot className="w-5 h-5 mr-2" />
                 Detailed Mode
               </Button>
             </div>
           </div>
 
-          <Card className="mb-6 bg-black/30 border-cyan-400/30 backdrop-blur-sm">
+          <Card className="mb-8 bg-black/30 border-cyan-400/30 backdrop-blur-sm">
             <CardHeader>
-              <CardTitle className="flex items-center space-x-2 text-cyan-400">
-                <MessageCircle className="w-6 h-6" />
+              <CardTitle className="flex items-center space-x-3 text-cyan-400 text-2xl">
+                <MessageCircle className="w-7 h-7" />
                 <span>Chat with AI Tutor</span>
                 <Badge
                   variant="outline"
-                  className="border-cyan-400 text-cyan-400 ml-auto"
+                  className="border-cyan-400 text-cyan-400 ml-auto text-lg px-4 py-1"
                 >
                   {mode === "simple" ? "ELI5 Mode" : "Deep Dive Mode"}
                 </Badge>
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="h-96 overflow-y-auto mb-4 space-y-4 p-4 bg-black/20 rounded-lg">
+              <div className="h-[32rem] overflow-y-auto mb-6 space-y-5 p-6 bg-black/20 rounded-lg">
                 {messages.map((message) => (
                   <motion.div
                     key={message.id}
@@ -189,20 +189,20 @@ const AITutor = () => {
                     }`}
                   >
                     <div
-                      className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
+                      className={`max-w-lg px-5 py-3 rounded-lg ${
                         message.isUser
                           ? "bg-cyan-500 text-white"
                           : "bg-white/10 text-gray-100 border border-white/20"
                       }`}
                     >
-                      <div className="flex items-start space-x-2">
+                      <div className="flex items-start space-x-3">
                         {!message.isUser && (
-                          <Bot className="w-4 h-4 mt-1 text-cyan-400" />
+                          <Bot className="w-5 h-5 mt-1 text-cyan-400" />
                         )}
-                        {message.isUser && <User className="w-4 h-4 mt-1" />}
+                        {message.isUser && <User className="w-5 h-5 mt-1" />}
                         <div>
-                          <p className="text-sm">{message.text}</p>
-                          <p className="text-xs opacity-70 mt-1">
+                          <p className="text-base">{message.text}</p>
+                          <p className="text-sm opacity-70 mt-2">
                             {message.timestamp.toLocaleTimeString()}
                           </p>
                         </div>
@@ -217,17 +217,17 @@ const AITutor = () => {
                     animate={{ opacity: 1 }}
                     className="flex justify-start"
                   >
-                    <div className="bg-white/10 px-4 py-2 rounded-lg border border-white/20">
-                      <div className="flex items-center space-x-2">
-                        <Bot className="w-4 h-4 text-cyan-400" />
-                        <div className="flex space-x-1">
-                          <div className="w-2 h-2 bg-cyan-400 rounded-full animate-bounce"></div>
+                    <div className="bg-white/10 px-5 py-3 rounded-lg border border-white/20">
+                      <div className="flex items-center space-x-3">
+                        <Bot className="w-5 h-5 text-cyan-400" />
+                        <div className="flex space-x-2">
+                          <div className="w-3 h-3 bg-cyan-400 rounded-full animate-bounce"></div>
                           <div
-                            className="w-2 h-2 bg-cyan-400 rounded-full animate-bounce"
+                            className="w-3 h-3 bg-cyan-400 rounded-full animate-bounce"
                             style={{ animationDelay: "0.1s" }}
                           ></div>
                           <div
-                            className="w-2 h-2 bg-cyan-400 rounded-full animate-bounce"
+                            className="w-3 h-3 bg-cyan-400 rounded-full animate-bounce"
                             style={{ animationDelay: "0.2s" }}
                           ></div>
                         </div>
@@ -237,19 +237,19 @@ const AITutor = () => {
                 )}
               </div>
 
-              <div className="flex space-x-2">
+              <div className="flex space-x-3">
                 <Input
                   value={inputText}
                   onChange={(e) => setInputText(e.target.value)}
                   placeholder="Ask me anything about space and astronomy..."
-                  className="flex-1 bg-white/10 border-white/20 text-white placeholder-gray-400"
+                  className="flex-1 bg-white/10 border-white/20 text-white placeholder-gray-400 text-lg py-6"
                   onKeyPress={(e) => e.key === "Enter" && sendMessage()}
                 />
                 <Button
                   onClick={sendMessage}
-                  className="bg-cyan-500 hover:bg-cyan-600"
+                  className="bg-cyan-500 hover:bg-cyan-600 px-6"
                 >
-                  <Send className="w-4 h-4" />
+                  <Send className="w-5 h-5" />
                 </Button>
               </div>
             </CardContent>
@@ -257,18 +257,18 @@ const AITutor = () => {
 
           <Card className="bg-black/30 border-white/20 backdrop-blur-sm">
             <CardHeader>
-              <CardTitle className="text-white">Quick Questions</CardTitle>
+              <CardTitle className="text-white text-2xl">Quick Questions</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {quickQuestions.map((question, index) => (
                   <Button
                     key={index}
                     variant="outline"
-                    className="text-left h-auto p-3 border-white/20 hover:bg-white/10 hover:border-cyan-400/50 transition-all duration-300"
+                    className="text-left h-auto p-4 border-white/20 hover:bg-white/10 hover:border-cyan-400/50 transition-all duration-300"
                     onClick={() => handleQuickQuestion(question)}
                   >
-                    <span className="text-sm text-gray-300">{question}</span>
+                    <span className="text-base text-gray-300">{question}</span>
                   </Button>
                 ))}
               </div>
