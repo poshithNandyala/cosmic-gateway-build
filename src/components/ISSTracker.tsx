@@ -20,47 +20,50 @@ const ISSTracker = () => {
   useEffect(() => {
     const fetchISSData = async () => {
       try {
-        // Fetch ISS position
-        const positionResponse = await fetch('http://api.open-notify.org/iss-now.json');
-        const positionData = await positionResponse.json();
-        
-        // Fetch people in space
-        const peopleResponse = await fetch('http://api.open-notify.org/astros.json');
-        const peopleData = await peopleResponse.json();
-        
+        const isLocal = window.location.hostname === "localhost";
+        const base = isLocal
+          ? "http://api.open-notify.org"
+          : "https://corsproxy.io/?http://api.open-notify.org";
+
+        const positionRes = await fetch(`${base}/iss-now.json`);
+        const positionData = await positionRes.json();
+
+        const peopleRes = await fetch(`${base}/astros.json`);
+        const peopleData = await peopleRes.json();
+
         setIssData({
           latitude: parseFloat(positionData.iss_position.latitude),
           longitude: parseFloat(positionData.iss_position.longitude),
-          altitude: 408, // Average ISS altitude in km
-          velocity: 27600, // Average ISS speed in km/h
-          visibility: 'Visible',
+          altitude: 408,
+          velocity: 27600,
+          visibility: "Visible",
           timestamp: positionData.timestamp * 1000,
         });
-        
-        setAstronauts(peopleData.people.filter((person: any) => person.craft === 'ISS'));
+
+        setAstronauts(
+          peopleData.people.filter((person: any) => person.craft === "ISS")
+        );
         setLoading(false);
       } catch (error) {
-        console.error('Error fetching ISS data:', error);
-        // Fallback data for demo
+        console.error("Error fetching ISS data:", error);
         setIssData({
           latitude: 25.7617,
           longitude: -80.1918,
           altitude: 408,
           velocity: 27600,
-          visibility: 'Visible',
+          visibility: "Visible",
           timestamp: Date.now(),
         });
         setAstronauts([
-          { name: 'Demo Astronaut 1', craft: 'ISS' },
-          { name: 'Demo Astronaut 2', craft: 'ISS' },
+          { name: "Demo Astronaut 1", craft: "ISS" },
+          { name: "Demo Astronaut 2", craft: "ISS" },
         ]);
         setLoading(false);
       }
     };
 
     fetchISSData();
-    const interval = setInterval(fetchISSData, 5000); // Update every 5 seconds
-
+    const interval = setInterval(fetchISSData, 5000);
     return () => clearInterval(interval);
   }, []);
 
@@ -74,7 +77,9 @@ const ISSTracker = () => {
           >
             <Satellite className="w-16 h-16 text-blue-400 mx-auto mb-4" />
           </motion.div>
-          <p className="text-xl text-gray-300">Connecting to the International Space Station...</p>
+          <p className="text-xl text-gray-300">
+            Connecting to the International Space Station...
+          </p>
         </div>
       </div>
     );
@@ -89,13 +94,18 @@ const ISSTracker = () => {
         viewport={{ once: true }}
       >
         <div className="text-center mb-12">
-          <a href="https://isstracker.pl/en" target="_blank" rel="noopener noreferrer">
+          <a
+            href="https://isstracker.pl/en"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
               ISS Live Tracker
             </h2>
           </a>
           <p className="text-xl text-gray-300">
-            Follow the International Space Station as it orbits Earth at 27,600 km/h
+            Follow the International Space Station as it orbits Earth at 27,600
+            km/h
           </p>
         </div>
 
@@ -110,9 +120,13 @@ const ISSTracker = () => {
             <CardContent>
               <div className="text-white">
                 <p className="text-sm text-gray-400">Latitude</p>
-                <p className="text-lg font-semibold">{issData?.latitude.toFixed(4)}°</p>
+                <p className="text-lg font-semibold">
+                  {issData?.latitude.toFixed(4)}°
+                </p>
                 <p className="text-sm text-gray-400 mt-2">Longitude</p>
-                <p className="text-lg font-semibold">{issData?.longitude.toFixed(4)}°</p>
+                <p className="text-lg font-semibold">
+                  {issData?.longitude.toFixed(4)}°
+                </p>
               </div>
             </CardContent>
           </Card>
@@ -141,7 +155,9 @@ const ISSTracker = () => {
             </CardHeader>
             <CardContent>
               <div className="text-white">
-                <p className="text-3xl font-bold">{issData?.velocity.toLocaleString()}</p>
+                <p className="text-3xl font-bold">
+                  {issData?.velocity.toLocaleString()}
+                </p>
                 <p className="text-gray-400">km/h</p>
               </div>
             </CardContent>
@@ -178,7 +194,9 @@ const ISSTracker = () => {
                   className="bg-white/10 p-4 rounded-lg"
                 >
                   <p className="text-white font-semibold">{astronaut.name}</p>
-                  <p className="text-gray-400 text-sm">International Space Station</p>
+                  <p className="text-gray-400 text-sm">
+                    International Space Station
+                  </p>
                 </motion.div>
               ))}
             </div>
