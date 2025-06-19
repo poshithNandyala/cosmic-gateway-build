@@ -1,73 +1,85 @@
-# Welcome to your Lovable project
+# 🌌 Cosmic Navigator
 
-## Project info
+**Your Gateway to the Universe**  
+🚀 A solo-built project for **The Stellar Gateway Hackathon** — and yes, I’m aiming for **1st place** 🏆
 
-**URL**: https://lovable.dev/projects/b132192d-a14f-492d-abe6-401b67537007
+🌐 [Live Demo](https://cosmic-gateway-build.vercel.app/)
 
-## How can I edit this code?
+---
 
-There are several ways of editing your application.
+## 🛰️ Overview
 
-**Use Lovable**
+**Cosmic Navigator** is a full-featured space exploration platform that transforms live astronomical data into interactive, educational experiences. Whether you're curious about where the ISS is right now, when the next meteor shower peaks, or how space weather looks today — this platform has it all.
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/b132192d-a14f-492d-abe6-401b67537007) and start prompting.
+Built with passion, precision, and purpose, this project is designed to **ignite curiosity and make space exploration accessible to everyone**.
 
-Changes made via Lovable will be committed automatically to this repo.
+---
 
-**Use your preferred IDE**
+## 🌟 Key Features
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+### 🛰 ISS Live Tracker  
+- Track the ISS in real-time: latitude, longitude, altitude, velocity, and crew on board.
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+### 🌠 Live Astronomical Events  
+- Real-time data on meteor showers, eclipses, moon phases, and planetary events.
 
-Follow these steps:
+### 🚀 SpaceX Mission Feed  
+- Browse historical SpaceX launches with mission status and wiki links.
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
+### 🪐 Solar System Explorer  
+- Interactive views of planets in 2D/3D to visualize celestial bodies in our neighborhood.
+
+### 🌤 Space Weather Dashboard  
+- Live updates on:
+  - Geomagnetic storms
+  - Solar flares
+  - Solar wind speed
+  - Kp Index and proton flux
+
+### 🔭 Stargazing Guide  
+- Location-aware stargazing conditions, cloud cover, temperature, and best viewing times.
+
+### 🤖 AI Astronomy Tutor  
+- Powered by **Gemini API** for intelligent Q&A  
+- Simple, detailed, and ELI5 (Explain Like I’m 5) modes  
+- Ask questions like “Why do planets orbit the sun?” or “What causes meteor showers?”
+
+---
+
+## 🧑‍🚀 Built With
+
+| Tech              | Description                                |
+|-------------------|--------------------------------------------|
+| **React + Vite**  | Fast, modern frontend                      |
+| **TypeScript**    | Static typing for robust code              |
+| **Tailwind CSS**  | Rapid styling and responsive design        |
+| **shadcn/ui**     | Accessible, headless UI components         |
+| **Supabase**      | Backend-as-a-service for real-time storage |
+| **Gemini API**    | AI tutor and conversation logic            |
+| **Multiple APIs** | ISS, NASA, planetary data, weather, etc.   |
+
+---
+
+## 🌐 Deployment
+
+Hosted on **Vercel**:  
+🔗 [https://cosmic-gateway-build.vercel.app/](https://cosmic-gateway-build.vercel.app/)
+
+---
+
+## 🧠 Run Locally
+
+> Prerequisite: [Node.js](https://nodejs.org/) installed
+
+```bash
+# Step 1: Clone the repo
 git clone <YOUR_GIT_URL>
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+# Step 2: Navigate into the project
+cd cosmic-navigator
 
-# Step 3: Install the necessary dependencies.
-npm i
+# Step 3: Install dependencies
+npm install
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+# Step 4: Start the development server
 npm run dev
-```
-
-**Edit a file directly in GitHub**
-
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/b132192d-a14f-492d-abe6-401b67537007) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
