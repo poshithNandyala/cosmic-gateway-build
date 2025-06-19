@@ -1,4 +1,3 @@
-
 import { motion } from 'framer-motion';
 import { ArrowDown, Rocket, Satellite, Globe } from 'lucide-react';
 
@@ -15,7 +14,7 @@ const Hero = () => {
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 1, delay: 0.2 }}
         >
-          <h1 className="text-6xl md:text-8xl font-bold mb-6 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+          <h1 className="text-6xl md:text-8xl font-bold mb-6 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent leading-tight">
             Cosmic Navigator
           </h1>
           <p className="text-xl md:text-2xl text-gray-300 mb-8 leading-relaxed">
