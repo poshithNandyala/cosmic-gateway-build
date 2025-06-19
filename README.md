@@ -1,7 +1,7 @@
 # 🌌 Cosmic Navigator
 
 **Your Gateway to the Universe**  
-🚀 A solo-built project for **The Stellar Gateway Hackathon** — and yes, I’m aiming for **1st place** 🏆
+🚀 A solo-built project for **The Stellar Gateway Hackathon** — and yes, I'm aiming for **1st place** 🏆
 
 🌐 [Live Demo](https://cosmic-gateway-build.vercel.app/)
 
@@ -18,18 +18,23 @@ Built with passion, precision, and purpose, this project is designed to **ignite
 ## 🌟 Key Features
 
 ### 🛰 ISS Live Tracker  
+
 - Track the ISS in real-time: latitude, longitude, altitude, velocity, and crew on board.
 
 ### 🌠 Live Astronomical Events  
+
 - Real-time data on meteor showers, eclipses, moon phases, and planetary events.
 
 ### 🚀 SpaceX Mission Feed  
+
 - Browse historical SpaceX launches with mission status and wiki links.
 
 ### 🪐 Solar System Explorer  
+
 - Interactive views of planets in 2D/3D to visualize celestial bodies in our neighborhood.
 
 ### 🌤 Space Weather Dashboard  
+
 - Live updates on:
   - Geomagnetic storms
   - Solar flares
@@ -37,12 +42,14 @@ Built with passion, precision, and purpose, this project is designed to **ignite
   - Kp Index and proton flux
 
 ### 🔭 Stargazing Guide  
+
 - Location-aware stargazing conditions, cloud cover, temperature, and best viewing times.
 
 ### 🤖 AI Astronomy Tutor  
+
 - Powered by **Gemini API** for intelligent Q&A  
-- Simple, detailed, and ELI5 (Explain Like I’m 5) modes  
-- Ask questions like “Why do planets orbit the sun?” or “What causes meteor showers?”
+- Simple, detailed, and ELI5 (Explain Like I'm 5) modes  
+- Ask questions like "Why do planets orbit the sun?" or "What causes meteor showers?"
 
 ---
 
@@ -65,6 +72,9 @@ Built with passion, precision, and purpose, this project is designed to **ignite
 Hosted on **Vercel**:  
 🔗 [https://cosmic-gateway-build.vercel.app/](https://cosmic-gateway-build.vercel.app/)
 
+⚠️ **Notes on Deployment**  
+Cosmic Navigator is optimized for speed and stability. If any layout glitches or API delays occur when using the Vercel-hosted version, simply clone the project and run it locally for the smoothest experience. The local build ensures full functionality, fast performance, and consistent data flow.
+
 ---
 
 ## 🧠 Run Locally
@@ -78,8 +88,10 @@ git clone <YOUR_GIT_URL>
 # Step 2: Navigate into the project
 cd cosmic-navigator
 
-# Step 3: Install dependencies
-npm install
+# Step 3: Install dependencies (skip strict peer dependency checks)
+npm install --legacy-peer-deps
+
 
 # Step 4: Start the development server
 npm run dev
+```
