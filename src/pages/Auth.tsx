@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Navigate } from 'react-router-dom';
-import { Mail, Lock, Github, User, ArrowLeft } from 'lucide-react';
+import { Mail, Lock, Github, User, ArrowLeft, Rocket } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -56,7 +56,28 @@ const Auth = () => {
     <div className="min-h-screen bg-gradient-to-b from-slate-900 via-purple-900 to-slate-900 dark:from-slate-900 dark:via-purple-900 dark:to-slate-900 light:from-blue-50 light:via-purple-50 light:to-pink-50 text-white dark:text-white light:text-gray-900 overflow-hidden relative">
       <StarField />
       
-      <div className="relative z-10 min-h-screen flex items-center justify-center px-6">
+      {/* Header with consistent branding */}
+      <div className="relative z-10 pt-6 px-6">
+        <motion.div
+          className="flex items-center justify-center space-x-3"
+          whileHover={{ scale: 1.05 }}
+        >
+          <div className="relative">
+            <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
+              <Rocket className="w-6 h-6 text-white" />
+            </div>
+            <div className="absolute -inset-1 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full blur opacity-30 animate-pulse"></div>
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+              Cosmic Navigator
+            </h1>
+            <p className="text-xs text-gray-400">Stellar Gateway Quest</p>
+          </div>
+        </motion.div>
+      </div>
+      
+      <div className="relative z-10 min-h-screen flex items-center justify-center px-6 -mt-20">
         <motion.div
           initial={{ y: 50, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
@@ -77,7 +98,7 @@ const Auth = () => {
                 </div>
               </motion.div>
               <CardTitle className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-                {isResetPassword ? 'Reset Password' : isSignUp ? 'Join Nebula Nexus' : 'Welcome Back'}
+                {isResetPassword ? 'Reset Password' : isSignUp ? 'Join Cosmic Navigator' : 'Welcome Back'}
               </CardTitle>
               <p className="text-gray-400 text-sm">
                 {isResetPassword 
@@ -97,7 +118,7 @@ const Auth = () => {
                       variant="outline"
                       onClick={() => handleOAuthSignIn('google')}
                       disabled={loading}
-                      className="border-white/20 hover:bg-white/10"
+                      className="border-white/20 hover:bg-white/10 text-white"
                     >
                       <Mail className="w-4 h-4 mr-2" />
                       Google
@@ -106,7 +127,7 @@ const Auth = () => {
                       variant="outline"
                       onClick={() => handleOAuthSignIn('github')}
                       disabled={loading}
-                      className="border-white/20 hover:bg-white/10"
+                      className="border-white/20 hover:bg-white/10 text-white"
                     >
                       <Github className="w-4 h-4 mr-2" />
                       GitHub
@@ -130,7 +151,7 @@ const Auth = () => {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
-                    className="bg-white/10 border-white/20 text-white placeholder-gray-400"
+                    className="bg-white/10 border-white/20 text-white placeholder-gray-400 focus:border-purple-400"
                   />
                 </div>
 
@@ -142,7 +163,7 @@ const Auth = () => {
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       required
-                      className="bg-white/10 border-white/20 text-white placeholder-gray-400"
+                      className="bg-white/10 border-white/20 text-white placeholder-gray-400 focus:border-purple-400"
                     />
                   </div>
                 )}
@@ -155,14 +176,14 @@ const Auth = () => {
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
                       required
-                      className="bg-white/10 border-white/20 text-white placeholder-gray-400"
+                      className="bg-white/10 border-white/20 text-white placeholder-gray-400 focus:border-purple-400"
                     />
                   </div>
                 )}
 
                 <Button
                   type="submit"
-                  className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
+                  className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white border-0"
                   disabled={loading}
                 >
                   {loading ? (

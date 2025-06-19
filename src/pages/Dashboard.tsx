@@ -1,8 +1,7 @@
-
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Navigate } from 'react-router-dom';
-import { Bell, Heart, Settings, Calendar, Satellite, User } from 'lucide-react';
+import { Bell, Heart, Settings, Calendar, Satellite, User, Rocket } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -54,16 +53,37 @@ const Dashboard = () => {
     <div className="min-h-screen bg-gradient-to-b from-slate-900 via-purple-900 to-slate-900 text-white relative">
       <StarField />
       
-      <div className="relative z-10 container mx-auto px-6 py-20">
+      {/* Header with consistent branding */}
+      <div className="relative z-10 pt-6 px-6">
+        <motion.div
+          className="flex items-center justify-center space-x-3 mb-8"
+          whileHover={{ scale: 1.05 }}
+        >
+          <div className="relative">
+            <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
+              <Rocket className="w-6 h-6 text-white" />
+            </div>
+            <div className="absolute -inset-1 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full blur opacity-30 animate-pulse"></div>
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+              Cosmic Navigator
+            </h1>
+            <p className="text-xs text-gray-400">Stellar Gateway Quest</p>
+          </div>
+        </motion.div>
+      </div>
+      
+      <div className="relative z-10 container mx-auto px-6 pb-20">
         <motion.div
           initial={{ y: 50, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.8 }}
         >
           <div className="text-center mb-12">
-            <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+            <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
               Personal Dashboard
-            </h1>
+            </h2>
             <p className="text-xl text-gray-300">
               Welcome back to your cosmic command center, {user.email}
             </p>
