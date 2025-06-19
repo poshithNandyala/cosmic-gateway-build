@@ -42,7 +42,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         if (event === 'SIGNED_IN') {
           toast({
             title: "Welcome!",
-            description: "You've successfully signed in to Nebula Nexus.",
+            description: "You've successfully signed in to Cosmic Navigator.",
           });
         }
       }

@@ -1,53 +1,56 @@
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Menu, X, Rocket, Telescope, Satellite, Users, MessageCircle, User, LogIn } from 'lucide-react';
+import { Menu, X, User, LogOut, Rocket, Satellite, Calendar, Globe, Sun, Users, MessageCircle, Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { ThemeToggle } from '@/components/ui/theme-toggle';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
 interface EnhancedHeaderProps {
-  currentSection: string;
+  currentSection?: string;
 }
 
-const EnhancedHeader = ({ currentSection }: EnhancedHeaderProps) => {
+const EnhancedHeader: React.FC<EnhancedHeaderProps> = ({ currentSection = 'hero' }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
 
   const navItems = [
-    { id: 'hero', label: 'Home', icon: Rocket, path: '/' },
-    { id: 'iss', label: 'ISS Tracker', icon: Satellite, path: '/#iss' },
-    { id: 'crew', label: 'Crew Details', icon: Users, path: '/crew' },
-    { id: 'events', label: 'Events', icon: Telescope, path: '/#events' },
-    { id: 'solar', label: 'Solar System', icon: Rocket, path: '/#solar' },
-    { id: 'weather', label: 'Space Weather', icon: Telescope, path: '/#weather' },
-    { id: 'stargazing', label: 'Stargazing', icon: Users, path: '/#stargazing' },
-    { id: 'chat', label: 'AI Tutor', icon: MessageCircle, path: '/#chat' },
+    { id: 'hero', label: 'Home', icon: Rocket },
+    { id: 'iss', label: 'ISS Tracker', icon: Satellite },
+    { id: 'events', label: 'Events', icon: Calendar },
+    { id: 'spacex', label: 'SpaceX', icon: Rocket },
+    { id: 'solar', label: 'Solar System', icon: Globe },
+    { id: 'weather', label: 'Space Weather', icon: Sun },
+    { id: 'stargazing', label: 'Stargazing', icon: Star },
+    { id: 'chat', label: 'AI Tutor', icon: MessageCircle },
   ];
 
-  const handleNavigation = (item: any) => {
-    if (item.path.startsWith('/#')) {
-      // Scroll to section on home page
-      if (window.location.pathname !== '/') {
-        navigate('/');
-        setTimeout(() => scrollToSection(item.id), 100);
-      } else {
-        scrollToSection(item.id);
-      }
+  const scrollToSection = (sectionId: string) => {
+    if (window.location.pathname !== '/') {
+      navigate('/');
+      setTimeout(() => {
+        const element = document.getElementById(sectionId);
+        element?.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
     } else {
-      // Navigate to different page
-      navigate(item.path);
+      const element = document.getElementById(sectionId);
+      element?.scrollIntoView({ behavior: 'smooth' });
     }
     setIsMenuOpen(false);
   };
 
-  const scrollToSection = (sectionId: string) => {
-    const element = document.getElementById(sectionId);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
+  const handleAuthAction = () => {
+    if (user) {
+      navigate('/dashboard');
+    } else {
+      navigate('/auth');
     }
+  };
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate('/');
   };
 
   return (
@@ -59,169 +62,150 @@ const EnhancedHeader = ({ currentSection }: EnhancedHeaderProps) => {
     >
       <div className="container mx-auto px-6 py-4">
         <div className="flex items-center justify-between">
+          {/* Logo */}
           <motion.div
             className="flex items-center space-x-3 cursor-pointer"
+            onClick={() => scrollToSection('hero')}
             whileHover={{ scale: 1.05 }}
-            onClick={() => navigate('/')}
           >
             <div className="relative">
-              <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
-                <Rocket className="w-6 h-6 text-white" />
+              <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
+                <Rocket className="w-5 h-5 text-white" />
               </div>
               <div className="absolute -inset-1 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full blur opacity-30 animate-pulse"></div>
             </div>
             <div>
-              <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-                Nebula Nexus
+              <h1 className="text-xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+                Cosmic Navigator
               </h1>
-              <p className="text-xs text-gray-400">Stellar Gateway Quest</p>
+              <p className="text-xs text-gray-400 hidden sm:block">Stellar Gateway Quest</p>
             </div>
           </motion.div>
 
           {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center space-x-1">
+          <nav className="hidden lg:flex items-center space-x-6">
             {navItems.map((item) => {
               const Icon = item.icon;
-              const isActive = (item.path === '/' && window.location.pathname === '/') || 
-                              (item.path !== '/' && window.location.pathname === item.path) ||
-                              currentSection === item.id;
+              const isActive = currentSection === item.id;
+              
               return (
-                <Button
+                <button
                   key={item.id}
-                  variant="ghost"
-                  onClick={() => handleNavigation(item)}
-                  className={`flex items-center space-x-2 px-4 py-2 rounded-full transition-all duration-300 ${
+                  onClick={() => scrollToSection(item.id)}
+                  className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-all duration-300 ${
                     isActive
-                      ? 'bg-purple-500/30 text-purple-400 border border-purple-400/50'
-                      : 'text-gray-300 hover:bg-white/10 hover:text-white'
+                      ? 'bg-purple-500/20 text-purple-400 border border-purple-400/30'
+                      : 'text-gray-300 hover:text-white hover:bg-white/10'
                   }`}
                 >
                   <Icon className="w-4 h-4" />
-                  <span className="text-sm">{item.label}</span>
-                </Button>
+                  <span className="text-sm hidden xl:block">{item.label}</span>
+                </button>
               );
             })}
           </nav>
 
-          <div className="flex items-center space-x-4">
-            <ThemeToggle />
-            
-            {/* Auth Button */}
+          {/* Desktop Auth Buttons */}
+          <div className="hidden md:flex items-center space-x-3">
             {user ? (
-              <div className="hidden lg:flex items-center space-x-2">
+              <div className="flex items-center space-x-3">
                 <Button
                   variant="ghost"
-                  onClick={() => navigate('/dashboard')}
-                  className="flex items-center space-x-2 text-gray-300 hover:text-white"
+                  size="sm"
+                  onClick={handleAuthAction}
+                  className="text-gray-300 hover:text-white hover:bg-white/10"
                 >
-                  <User className="w-4 h-4" />
-                  <span>Dashboard</span>
+                  <User className="w-4 h-4 mr-2" />
+                  Dashboard
                 </Button>
                 <Button
-                  variant="ghost"
-                  onClick={signOut}
-                  className="text-gray-300 hover:text-white"
+                  variant="outline"
+                  size="sm"
+                  onClick={handleSignOut}
+                  className="border-red-400/50 text-red-400 hover:bg-red-500/20"
                 >
+                  <LogOut className="w-4 h-4 mr-2" />
                   Sign Out
                 </Button>
               </div>
             ) : (
               <Button
-                variant="ghost"
-                onClick={() => navigate('/auth')}
-                className="hidden lg:flex items-center space-x-2 text-gray-300 hover:text-white"
+                onClick={handleAuthAction}
+                className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white"
               >
-                <LogIn className="w-4 h-4" />
-                <span>Sign In</span>
+                Sign In
               </Button>
             )}
-            
-            {/* Mobile Menu Button */}
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="lg:hidden"
-            >
-              {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-            </Button>
           </div>
+
+          {/* Mobile Menu Button */}
+          <button
+            className="md:hidden text-white"
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+          >
+            {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          </button>
         </div>
 
-        {/* Mobile Navigation */}
+        {/* Mobile Menu */}
         {isMenuOpen && (
-          <motion.nav
+          <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="lg:hidden mt-4 pb-4 border-t border-white/10 pt-4"
+            className="md:hidden mt-4 py-4 border-t border-white/10"
           >
-            <div className="flex flex-col space-y-2">
+            <div className="flex flex-col space-y-3">
               {navItems.map((item) => {
                 const Icon = item.icon;
-                const isActive = (item.path === '/' && window.location.pathname === '/') || 
-                                (item.path !== '/' && window.location.pathname === item.path) ||
-                                currentSection === item.id;
+                const isActive = currentSection === item.id;
+                
                 return (
-                  <Button
+                  <button
                     key={item.id}
-                    variant="ghost"
-                    onClick={() => handleNavigation(item)}
-                    className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-300 justify-start ${
+                    onClick={() => scrollToSection(item.id)}
+                    className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-300 ${
                       isActive
-                        ? 'bg-purple-500/30 text-purple-400 border border-purple-400/50'
-                        : 'text-gray-300 hover:bg-white/10 hover:text-white'
+                        ? 'bg-purple-500/20 text-purple-400 border border-purple-400/30'
+                        : 'text-gray-300 hover:text-white hover:bg-white/10'
                     }`}
                   >
                     <Icon className="w-5 h-5" />
                     <span>{item.label}</span>
-                  </Button>
+                  </button>
                 );
               })}
               
-              {/* Mobile Auth */}
-              <div className="border-t border-white/10 pt-4 mt-4">
+              <div className="pt-4 border-t border-white/10">
                 {user ? (
-                  <>
-                    <Button
-                      variant="ghost"
-                      onClick={() => {
-                        navigate('/dashboard');
-                        setIsMenuOpen(false);
-                      }}
-                      className="flex items-center space-x-3 px-4 py-3 rounded-lg w-full justify-start text-gray-300 hover:bg-white/10 hover:text-white"
+                  <div className="space-y-3">
+                    <button
+                      onClick={handleAuthAction}
+                      className="flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-300 hover:text-white hover:bg-white/10 w-full"
                     >
                       <User className="w-5 h-5" />
                       <span>Dashboard</span>
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      onClick={() => {
-                        signOut();
-                        setIsMenuOpen(false);
-                      }}
-                      className="flex items-center space-x-3 px-4 py-3 rounded-lg w-full justify-start text-gray-300 hover:bg-white/10 hover:text-white"
+                    </button>
+                    <button
+                      onClick={handleSignOut}
+                      className="flex items-center space-x-3 px-4 py-3 rounded-lg text-red-400 hover:bg-red-500/20 w-full"
                     >
-                      <LogIn className="w-5 h-5" />
+                      <LogOut className="w-5 h-5" />
                       <span>Sign Out</span>
-                    </Button>
-                  </>
+                    </button>
+                  </div>
                 ) : (
-                  <Button
-                    variant="ghost"
-                    onClick={() => {
-                      navigate('/auth');
-                      setIsMenuOpen(false);
-                    }}
-                    className="flex items-center space-x-3 px-4 py-3 rounded-lg w-full justify-start text-gray-300 hover:bg-white/10 hover:text-white"
+                  <button
+                    onClick={handleAuthAction}
+                    className="flex items-center justify-center space-x-2 w-full px-4 py-3 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white rounded-lg"
                   >
-                    <LogIn className="w-5 h-5" />
+                    <User className="w-5 h-5" />
                     <span>Sign In</span>
-                  </Button>
+                  </button>
                 )}
               </div>
             </div>
-          </motion.nav>
+          </motion.div>
         )}
       </div>
     </motion.header>
