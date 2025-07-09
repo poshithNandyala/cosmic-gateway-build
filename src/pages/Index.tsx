@@ -82,10 +82,24 @@ const Index = () => {
           </section>
         </motion.main>
         
-        <footer className="text-center py-8 text-gray-400">
-          <p>Built for The Stellar Gateway Hackathon 🚀</p>
-          <p className="text-sm mt-2">Exploring the cosmos through technology with Nebula Nexus</p>
-        </footer>
+       <footer className="text-center py-8 text-gray-400">
+  <p>Built for The Stellar Gateway Hackathon 🚀</p>
+  <p className="text-sm mt-2">
+    Exploring the cosmos through technology with Cosmic Navigator
+  </p>
+  <p className="text-xs mt-4">
+    Made with ❤️ by{" "}
+    <a
+      href="https://github.com/poshith"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="text-white font-medium hover:underline"
+    >
+      Poshith
+    </a>
+  </p>
+</footer>
+
       </div>
     </ThemeProvider>
   );
