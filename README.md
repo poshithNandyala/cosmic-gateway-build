@@ -83,10 +83,10 @@ Cosmic Navigator is optimized for speed and stability. If any layout glitches or
 
 ```bash
 # Step 1: Clone the repo
-git clone <YOUR_GIT_URL>
+git clone https://github.com/poshithNandyala/cosmic-gateway-build.git
 
 # Step 2: Navigate into the project
-cd cosmic-navigator
+cd cosmic-gateway-build
 
 # Step 3: Install dependencies (skip strict peer dependency checks)
 npm install --legacy-peer-deps
